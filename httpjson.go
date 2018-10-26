@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 )
@@ -53,17 +52,12 @@ func (c *HttpJson) Post(url string, request interface{}, response interface{}) e
 	}
 	defer resp.Body.Close()
 
-	respb, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	return json.NewDecoder(bytes.NewReader(respb)).Decode(response)
+	return json.NewDecoder(resp.Body).Decode(response)
 }
 
 func (c *HttpJson) Get(url string, response interface{}) error {
 
-	req, err := newRequest(http.MethodPost, url, nil)
+	req, err := newRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -74,10 +68,5 @@ func (c *HttpJson) Get(url string, response interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	respb, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	return json.NewDecoder(bytes.NewReader(respb)).Decode(response)
+	return json.NewDecoder(resp.Body).Decode(response)
 }
